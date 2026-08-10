@@ -1,28 +1,40 @@
 "use client";
 import { useState } from "react";
 
-// Data Produk Dummy (Bisa disesuaikan nanti)
-const PRODUCTS = [
+// 1. Definisi Tipe Data TypeScript
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+}
+
+interface CartItem extends Product {
+  qty: number;
+}
+
+// Data Produk Dummy
+const PRODUCTS: Product[] = [
   { id: 1, name: "Thinwall Rectangle 500ml", category: "Thinwall", price: 1500 },
   { id: 2, name: "Bubble Wrap Roll 1.25m x 50m", category: "Packing", price: 125000 },
   { id: 3, name: "Dus Makanan R10 (20x20)", category: "Kardus", price: 2200 },
   { id: 4, name: "Lakban Bening 2 Inch 90 Yard", category: "Packing", price: 12000 },
 ];
 
-// Data Nomor WA Admin per Cabang (Ganti dengan nomor WA asli masing-masing cabang)
-const BRANCHES = {
+// Data Nomor WA Admin per Cabang
+const BRANCHES: Record<string, string> = {
   "AD Plastik 1 - SSA Bantul": "6281234567890",
   "AD Plastik 2 - Ambarukmo": "6289876543210",
   "AD Plastik 3 - Potorono": "6281122334455",
 };
 
 export default function Home() {
-  const [cart, setCart] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("AD Plastik 1 - SSA Bantul");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<string>("AD Plastik 1 - SSA Bantul");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Tambah Ke Keranjang
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
       if (existing) {
@@ -35,7 +47,7 @@ export default function Home() {
   };
 
   // Ubah Kuantitas (+ / -)
-  const updateQty = (id, delta) => {
+  const updateQty = (id: number, delta: number) => {
     setCart((prevCart) =>
       prevCart
         .map((item) => {
@@ -45,7 +57,7 @@ export default function Home() {
           }
           return item;
         })
-        .filter(Boolean)
+        .filter((item): item is CartItem => item !== null)
     );
   };
 
