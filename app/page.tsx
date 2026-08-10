@@ -89,12 +89,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-24">
+    <div className="min-h-screen text-slate-800 pb-24">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white/85 backdrop-blur-md border-b border-rose-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-emerald-600">AD Plastik</h1>
-          <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
             <span>📍 Cabang:</span>
             <select
               value={selectedBranch}
@@ -111,24 +111,28 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="max-w-4xl mx-auto text-center mt-10 px-4">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-          Pusat Kemasan Plastik & Bahan Packing Grosir
-        </h2>
-        <p className="mt-3 text-slate-600">
-          Pesanan dikirim langsung dari cabang terdekat via WhatsApp Admin.
-        </p>
+        <div className="bg-white/70 backdrop-blur-sm p-6 sm:p-8 rounded-2xl border border-rose-100/80 shadow-sm">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+            Pusat Kemasan Plastik & Bahan Packing Grosir
+          </h2>
+          <p className="mt-3 text-slate-600 font-medium">
+            Pesanan dikirim langsung dari cabang terdekat via WhatsApp Admin.
+          </p>
+        </div>
       </section>
 
       {/* Product Catalog Grid */}
       <section className="max-w-6xl mx-auto mt-10 px-4">
-        <h3 className="text-xl font-bold text-slate-900 mb-6">Katalog Produk Ready Stock</h3>
+        <h3 className="text-xl font-bold text-slate-900 mb-6 bg-white/60 inline-block px-3 py-1 rounded-lg border border-rose-100/60">
+          Katalog Produk Ready Stock
+        </h3>
 
         {loading ? (
           <p className="text-center py-10 text-slate-500 font-medium">Memuat katalog dari database Supabase...</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition">
+              <div key={product.id} className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-rose-100 p-5 flex flex-col justify-between hover:shadow-md transition">
                 <div>
                   {product.image_url ? (
                     <img
