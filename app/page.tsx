@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/supabaseClient";
 
-// 1. Definisi Tipe Data TypeScript
 interface Product {
   id: number;
   name: string;
@@ -13,15 +13,6 @@ interface CartItem extends Product {
   qty: number;
 }
 
-// Data Produk Dummy
-const PRODUCTS: Product[] = [
-  { id: 1, name: "Thinwall Rectangle 500ml", category: "Thinwall", price: 1500 },
-  { id: 2, name: "Bubble Wrap Roll 1.25m x 50m", category: "Packing", price: 125000 },
-  { id: 3, name: "Dus Makanan R10 (20x20)", category: "Kardus", price: 2200 },
-  { id: 4, name: "Lakban Bening 2 Inch 90 Yard", category: "Packing", price: 12000 },
-];
-
-// Data Nomor WA Admin per Cabang
 const BRANCHES: Record<string, string> = {
   "AD Plastik 1 - SSA Bantul": "6281234567890",
   "AD Plastik 2 - Ambarukmo": "6289876543210",
@@ -29,11 +20,28 @@ const BRANCHES: Record<string, string> = {
 };
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>("AD Plastik 1 - SSA Bantul");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // Tambah Ke Keranjang
+  // Ambil Data Produk dari Supabase Database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) {
+        console.error("Gagal mengambil data dari Supabase:", error.message);
+      } else if (data) {
+        setProducts(data);
+      }
+      setLoading(false);
+    };
+
+    fetchProducts();
+  }, []);
+
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
@@ -46,7 +54,6 @@ export default function Home() {
     });
   };
 
-  // Ubah Kuantitas (+ / -)
   const updateQty = (id: number, delta: number) => {
     setCart((prevCart) =>
       prevCart
@@ -64,12 +71,10 @@ export default function Home() {
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  // Fungsi Kirim Pesan ke WhatsApp
   const handleCheckoutWA = () => {
     if (cart.length === 0) return;
 
     const phone = BRANCHES[selectedBranch] || "6281234567890";
-
     let message = `Halo Admin *${selectedBranch}*,\nSaya ingin memesan produk berikut:\n\n`;
 
     cart.forEach((item, index) => {
@@ -79,9 +84,7 @@ export default function Home() {
     message += `\n*Total Estimasi: Rp ${totalPrice.toLocaleString("id-ID")}*\n\nMohon diinfokan ketersediaan stok & ongkirnya. Terima kasih!`;
 
     const encodedMessage = encodeURIComponent(message);
-    const waUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
-
-    window.open(waUrl, "_blank");
+    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, "_blank");
   };
 
   return (
@@ -118,29 +121,34 @@ export default function Home() {
       {/* Product Catalog Grid */}
       <section className="max-w-6xl mx-auto mt-10 px-4">
         <h3 className="text-xl font-bold text-slate-900 mb-6">Katalog Produk Ready Stock</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {PRODUCTS.map((product) => (
-            <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
-                  {product.category}
-                </span>
-                <h4 className="font-bold text-slate-900 mt-3 text-lg">{product.name}</h4>
-                <p className="text-emerald-700 font-extrabold text-xl mt-2">
-                  Rp {product.price.toLocaleString("id-ID")}{" "}
-                  <span className="text-xs text-slate-500 font-normal">/ pcs</span>
-                </p>
-              </div>
 
-              <button
-                onClick={() => addToCart(product)}
-                className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg transition active:scale-95"
-              >
-                + Keranjang
-              </button>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-center py-10 text-slate-500 font-medium">Memuat katalog dari database Supabase...</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                    {product.category}
+                  </span>
+                  <h4 className="font-bold text-slate-900 mt-3 text-lg">{product.name}</h4>
+                  <p className="text-emerald-700 font-extrabold text-xl mt-2">
+                    Rp {Number(product.price).toLocaleString("id-ID")}{" "}
+                    <span className="text-xs text-slate-500 font-normal">/ pcs</span>
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => addToCart(product)}
+                  className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg transition active:scale-95"
+                >
+                  + Keranjang
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Floating Cart Button */}
@@ -178,7 +186,7 @@ export default function Home() {
                 <div key={item.id} className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                   <div>
                     <h4 className="font-semibold text-slate-900 text-sm">{item.name}</h4>
-                    <p className="text-xs text-slate-500">Rp {item.price.toLocaleString("id-ID")} / pcs</p>
+                    <p className="text-xs text-slate-500">Rp {Number(item.price).toLocaleString("id-ID")} / pcs</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
