@@ -7,6 +7,7 @@ interface Product {
   name: string;
   category: string;
   price: number;
+  image_url?: string;
 }
 
 interface CartItem extends Product {
@@ -129,6 +130,17 @@ export default function Home() {
             {products.map((product) => (
               <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition">
                 <div>
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-48 object-cover rounded-lg mb-3 bg-slate-100"
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-slate-100 rounded-lg mb-3 flex items-center justify-center text-slate-400 text-sm font-medium border border-dashed border-slate-200">
+                      Gambar Produk
+                    </div>
+                  )}
                   <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
                     {product.category}
                   </span>
@@ -184,9 +196,22 @@ export default function Home() {
             <div className="flex-1 overflow-y-auto py-4 space-y-4">
               {cart.map((item) => (
                 <div key={item.id} className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  <div>
-                    <h4 className="font-semibold text-slate-900 text-sm">{item.name}</h4>
-                    <p className="text-xs text-slate-500">Rp {Number(item.price).toLocaleString("id-ID")} / pcs</p>
+                  <div className="flex items-center gap-3">
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover rounded-md bg-slate-200 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 bg-slate-200 rounded-md shrink-0 flex items-center justify-center text-xs text-slate-400 font-bold">
+                        📦
+                      </div>
+                    )}
+                    <div>
+                      <h4 className="font-semibold text-slate-900 text-sm">{item.name}</h4>
+                      <p className="text-xs text-slate-500">Rp {Number(item.price).toLocaleString("id-ID")} / pcs</p>
+                    </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
