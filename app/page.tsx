@@ -76,13 +76,37 @@ export default function Home() {
     if (cart.length === 0) return;
 
     const phone = BRANCHES[selectedBranch] || "6281234567890";
-    let message = `Halo Admin *${selectedBranch}*,\nSaya ingin memesan produk berikut:\n\n`;
-
-    cart.forEach((item, index) => {
-      message += `${index + 1}. *${item.name}*\n   Qty: ${item.qty} pcs x Rp ${item.price.toLocaleString("id-ID")}\n   Subtotal: Rp ${(item.price * item.qty).toLocaleString("id-ID")}\n`;
+    
+    // Formatter tanggal pesanan
+    const dateStr = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
-    message += `\n*Total Estimasi: Rp ${totalPrice.toLocaleString("id-ID")}*\n\nMohon diinfokan ketersediaan stok & ongkirnya. Terima kasih!`;
+    let message = `🛒 *FORM PEMESANAN AD PLASTIK*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `📍 *Cabang Tujuan:* ${selectedBranch}\n`;
+    message += `📅 *Waktu Pesanan:* ${dateStr} WIB\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    message += `📋 *RINCIAN KERANJANG BELANJA:*\n\n`;
+
+    cart.forEach((item, index) => {
+      const itemSubtotal = item.price * item.qty;
+      message += `${index + 1}. *${item.name}*\n`;
+      message += `   • Kategori: ${item.category}\n`;
+      message += `   • Harga: Rp ${Number(item.price).toLocaleString("id-ID")} / pcs\n`;
+      message += `   • Jumlah: *${item.qty} pcs*\n`;
+      message += `   • Subtotal: *Rp ${itemSubtotal.toLocaleString("id-ID")}*\n\n`;
+    });
+
+    message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `📦 *Total Item:* ${totalItems} Pcs (${cart.length} Jenis Produk)\n`;
+    message += `💰 *TOTAL ESTIMASI:* *Rp ${totalPrice.toLocaleString("id-ID")}*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    message += `Mohon bantu cek ketersediaan stok & estimasi ongkirnya. Terima kasih! 🙏`;
 
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/${phone}?text=${encodedMessage}`, "_blank");
