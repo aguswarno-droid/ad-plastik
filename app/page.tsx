@@ -27,6 +27,11 @@ export default function Home() {
   const [selectedBranch, setSelectedBranch] = useState<string>("Pusat SSA Bantul (Depan Stadion Sultan Agung)");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // State Modal Login Admin
+  const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState<string>("");
+  const [adminAuthError, setAdminAuthError] = useState<string>("");
+
   // Ambil Data Produk dari Supabase Database
   useEffect(() => {
     const fetchProducts = async () => {
@@ -220,8 +225,18 @@ export default function Home() {
             </ul>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} AD Plastik. All rights reserved.
+        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+          <p>© {new Date().getFullYear()} AD Plastik. All rights reserved.</p>
+          <button
+            onClick={() => {
+              setIsAdminAuthModalOpen(true);
+              setAdminPasswordInput("");
+              setAdminAuthError("");
+            }}
+            className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-700 transition font-medium bg-slate-100/80 hover:bg-emerald-50 px-3 py-1.5 rounded-lg border border-slate-200 cursor-pointer"
+          >
+            <span>🔒</span> Admin
+          </button>
         </div>
       </footer>
 
@@ -311,6 +326,76 @@ export default function Home() {
                 💬 Order Via WhatsApp Admin
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Pop-Up Auth Admin Password */}
+      {isAdminAuthModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>🔒</span> Akses Admin Dashboard
+              </h3>
+              <button
+                onClick={() => setIsAdminAuthModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (adminPasswordInput === "admin123") {
+                  setIsAdminAuthModalOpen(false);
+                  window.location.href = "/admin";
+                } else {
+                  setAdminAuthError("Password Salah!");
+                }
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Masukkan Password Admin
+                </label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={adminPasswordInput}
+                  onChange={(e) => {
+                    setAdminPasswordInput(e.target.value);
+                    setAdminAuthError("");
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
+                  autoFocus
+                />
+                {adminAuthError && (
+                  <p className="text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
+                    <span>⚠️</span> {adminAuthError}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAdminAuthModalOpen(false)}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition cursor-pointer"
+                >
+                  Masuk Admin
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
