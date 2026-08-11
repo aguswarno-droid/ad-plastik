@@ -16,16 +16,15 @@ interface CartItem extends Product {
 }
 
 const BRANCHES: Record<string, string> = {
-  "AD Plastik 1 - SSA Bantul": "6281234567890",
-  "AD Plastik 2 - Ambarukmo": "6289876543210",
-  "AD Plastik 3 - Potorono": "6281122334455",
+  "Pusat SSA Bantul (Depan Stadion Sultan Agung)": "6281234567890",
+  "Cabang Potorono": "6281122334455",
 };
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [selectedBranch, setSelectedBranch] = useState<string>("AD Plastik 1 - SSA Bantul");
+  const [selectedBranch, setSelectedBranch] = useState<string>("Pusat SSA Bantul (Depan Stadion Sultan Agung)");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Ambil Data Produk dari Supabase Database
@@ -102,9 +101,8 @@ export default function Home() {
               onChange={(e) => setSelectedBranch(e.target.value)}
               className="bg-transparent font-semibold text-slate-900 focus:outline-none cursor-pointer"
             >
-              <option value="AD Plastik 1 - SSA Bantul">AD Plastik 1 - SSA Bantul</option>
-              <option value="AD Plastik 2 - Ambarukmo">AD Plastik 2 - Ambarukmo</option>
-              <option value="AD Plastik 3 - Potorono">AD Plastik 3 - Potorono</option>
+              <option value="Pusat SSA Bantul (Depan Stadion Sultan Agung)">Pusat SSA Bantul (Depan Stadion Sultan Agung)</option>
+              <option value="Cabang Potorono">Cabang Potorono</option>
             </select>
           </div>
         </div>
@@ -170,6 +168,38 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {/* Footer */}
+      <footer className="mt-20 border-t border-rose-100 bg-white/80 backdrop-blur-md pt-10 pb-8 px-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-700">
+          <div>
+            <h4 className="text-lg font-bold text-emerald-600 mb-2">AD Plastik - Pusat Kemasan Jogja</h4>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Pusat grosir & eceran perlengkapan packing, thinwall, paper bowl, dus makanan, dan kantong plastik terpercaya di Yogyakarta.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-md font-bold text-slate-900 mb-2">📍 Alamat Cabang Official:</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 font-bold">1.</span>
+                <div>
+                  <strong className="text-slate-900">Pusat SSA Bantul</strong> (Depan Stadion Sultan Agung)
+                </div>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-600 font-bold">2.</span>
+                <div>
+                  <strong className="text-slate-900">Cabang Potorono</strong>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-slate-200 text-center text-xs text-slate-500">
+          © {new Date().getFullYear()} AD Plastik. All rights reserved.
+        </div>
+      </footer>
 
       {/* Floating Cart Button */}
       {totalItems > 0 && (
