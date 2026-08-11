@@ -76,7 +76,7 @@ export default function Home() {
     if (cart.length === 0) return;
 
     const phone = BRANCHES[selectedBranch] || "6281234567890";
-    
+
     // Formatter tanggal pesanan
     const dateStr = new Date().toLocaleDateString("id-ID", {
       day: "numeric",
