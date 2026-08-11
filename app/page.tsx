@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/supabaseClient";
+import HeroSlider from "./components/HeroSlider";
 
 interface Product {
   id: number;
@@ -109,20 +110,23 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="max-w-4xl mx-auto text-center mt-10 px-4">
-        <div className="bg-white/70 backdrop-blur-sm p-6 sm:p-8 rounded-2xl border border-rose-100/80 shadow-sm">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-            Pusat Kemasan Plastik & Bahan Packing Grosir
-          </h2>
-          <p className="mt-3 text-slate-600 font-medium">
-            Pesanan dikirim langsung dari cabang terdekat via WhatsApp Admin.
-          </p>
-        </div>
-      </section>
+      {/* Hero Slider */}
+      <HeroSlider
+        onCatalogClick={() => {
+          const el = document.getElementById("katalog");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }}
+        onWAClick={() => {
+          const phone = BRANCHES[selectedBranch] || "6281234567890";
+          const message = encodeURIComponent(
+            `Halo Admin *${selectedBranch}*,\nSaya ingin bertanya mengenai produk kemasan & grosir plastik.`
+          );
+          window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+        }}
+      />
 
       {/* Product Catalog Grid */}
-      <section className="max-w-6xl mx-auto mt-10 px-4">
+      <section id="katalog" className="max-w-6xl mx-auto mt-10 px-4">
         <h3 className="text-xl font-bold text-slate-900 mb-6 bg-white/60 inline-block px-3 py-1 rounded-lg border border-rose-100/60">
           Katalog Produk Ready Stock
         </h3>
