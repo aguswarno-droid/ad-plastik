@@ -349,7 +349,8 @@ export default function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (adminPasswordInput === "admin123") {
+                if (adminPasswordInput === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+                  sessionStorage.setItem("ad_admin_authenticated", "true");
                   setIsAdminAuthModalOpen(false);
                   window.location.href = "/admin";
                 } else {

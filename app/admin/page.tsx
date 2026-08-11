@@ -24,6 +24,13 @@ const CATEGORY_OPTIONS = [
 ];
 
 export default function AdminDashboard() {
+  // Auth Verification State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
+  const [passwordInput, setPasswordInput] = useState<string>("");
+  const [authError, setAuthError] = useState<string>("");
+
+  // Product Data & UI States
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -69,9 +76,44 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  // Cek Status Autentikasi Login saat Pertama Kali Dibuka
   useEffect(() => {
-    fetchProducts();
+    const authStatus =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("ad_admin_authenticated")
+        : null;
+
+    if (authStatus === "true") {
+      setIsAuthenticated(true);
+      fetchProducts();
+    } else {
+      setIsAuthenticated(false);
+      setLoading(false);
+    }
+    setCheckingAuth(false);
   }, []);
+
+  // Handler Login Admin
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+      sessionStorage.setItem("ad_admin_authenticated", "true");
+      setIsAuthenticated(true);
+      setAuthError("");
+      fetchProducts();
+    } else {
+      setAuthError("Password Salah! Akses ditolak.");
+    }
+  };
+
+  // Handler Logout Admin
+  const handleAdminLogout = () => {
+    sessionStorage.removeItem("ad_admin_authenticated");
+    setIsAuthenticated(false);
+    setProducts([]);
+    setPasswordInput("");
+    setAuthError("");
+  };
 
   const showNotification = (
     type: "success" | "error" | "info",
@@ -244,6 +286,79 @@ export default function AdminDashboard() {
       p.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // 1. Tampilan Loading Saat Mengecek Status Autentikasi
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="animate-spin h-8 w-8 text-emerald-600 mx-auto border-4 border-emerald-600 border-t-transparent rounded-full" />
+          <p className="text-sm font-medium text-slate-600">Memeriksa hak akses admin...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Tampilan Form Input Password Jika Belum Terautentikasi (Akses Langsung via URL Ditolak)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+        <div className="bg-white max-w-md w-full p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-sm">
+              🔒
+            </div>
+            <h2 className="text-2xl font-extrabold text-slate-900">Area Terkunci Admin</h2>
+            <p className="text-xs text-slate-500">
+              Silakan masukkan Password Admin untuk mengakses dashboard kelola produk.
+            </p>
+          </div>
+
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Password Admin
+              </label>
+              <input
+                type="password"
+                placeholder="Masukkan password admin..."
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setAuthError("");
+                }}
+                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-sm"
+                autoFocus
+                required
+              />
+              {authError && (
+                <div className="mt-2.5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
+                  <span>⚠️</span> {authError}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition active:scale-95 text-sm cursor-pointer"
+            >
+              🔓 Masuk Dashboard Admin
+            </button>
+          </form>
+
+          <div className="pt-4 border-t border-slate-100 text-center">
+            <Link
+              href="/"
+              className="text-xs font-medium text-slate-500 hover:text-emerald-700 transition flex items-center justify-center gap-1.5"
+            >
+              <span>🌐</span> Kembali ke Landing Page
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. Tampilan Dashboard Utama Jika Sudah Terautentikasi
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
       {/* Header Admin */}
@@ -265,10 +380,16 @@ export default function AdminDashboard() {
             </span>
             <Link
               href="/"
-              className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5"
+              className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-200 transition flex items-center gap-1.5"
             >
-              <span>🌐</span> Lihat Landing Page
+              <span>🌐</span> Landing Page
             </Link>
+            <button
+              onClick={handleAdminLogout}
+              className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-medium text-xs sm:text-sm px-3.5 py-2 rounded-xl transition cursor-pointer flex items-center gap-1"
+            >
+              <span>🔒</span> Keluar Admin
+            </button>
           </div>
         </div>
       </header>
