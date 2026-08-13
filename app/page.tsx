@@ -7,7 +7,9 @@ interface Product {
   id: number;
   name: string;
   category: string;
-  price: number;
+  price_retail: number | string;
+  price_wholesale?: number | string;
+  description?: string;
   image_url?: string;
 }
 
@@ -18,6 +20,13 @@ interface CartItem extends Product {
 const BRANCHES: Record<string, string> = {
   "Pusat SSA Bantul (Depan Stadion Sultan Agung)": "6281234567890",
   "Cabang Potorono": "6281122334455",
+};
+
+const parsePrice = (val: any): number => {
+  if (!val) return 0;
+  if (typeof val === "number") return val;
+  const parsed = Number(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(parsed) ? 0 : parsed;
 };
 
 export default function Home() {
@@ -75,7 +84,7 @@ export default function Home() {
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + parsePrice(item.price_retail) * item.qty, 0);
 
   const handleCheckoutWA = () => {
     if (cart.length === 0) return;
@@ -99,10 +108,11 @@ export default function Home() {
     message += `📋 *RINCIAN KERANJANG BELANJA:*\n\n`;
 
     cart.forEach((item, index) => {
-      const itemSubtotal = item.price * item.qty;
+      const itemPrice = parsePrice(item.price_retail);
+      const itemSubtotal = itemPrice * item.qty;
       message += `${index + 1}. *${item.name}*\n`;
       message += `   • Kategori: ${item.category}\n`;
-      message += `   • Harga: Rp ${Number(item.price).toLocaleString("id-ID")} / pcs\n`;
+      message += `   • Harga: Rp ${itemPrice.toLocaleString("id-ID")} / pcs\n`;
       message += `   • Jumlah: *${item.qty} pcs*\n`;
       message += `   • Subtotal: *Rp ${itemSubtotal.toLocaleString("id-ID")}*\n\n`;
     });
@@ -188,10 +198,21 @@ export default function Home() {
                     {product.category}
                   </span>
                   <h4 className="font-bold text-slate-900 mt-3 text-lg">{product.name}</h4>
-                  <p className="text-emerald-700 font-extrabold text-xl mt-2">
-                    Rp {Number(product.price).toLocaleString("id-ID")}{" "}
-                    <span className="text-xs text-slate-500 font-normal">/ pcs</span>
-                  </p>
+                  {product.description && (
+                    <p className="text-xs text-slate-500 mt-1 mb-2 line-clamp-2 leading-relaxed">{product.description}</p>
+                  )}
+                  <div className="mt-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex flex-col gap-1.5">
+                    <p className="text-emerald-700 font-extrabold text-lg flex items-center justify-between">
+                      <span>Rp {parsePrice(product.price_retail).toLocaleString("id-ID")}</span>
+                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wide bg-slate-200/50 px-2 py-0.5 rounded">Eceran</span>
+                    </p>
+                    {product.price_wholesale && (
+                      <p className="text-yellow-700 font-bold text-sm flex items-center justify-between pt-1.5 border-t border-slate-200">
+                        <span>Rp {parsePrice(product.price_wholesale).toLocaleString("id-ID")}</span>
+                        <span className="text-[10px] text-yellow-700 font-bold uppercase tracking-wide bg-yellow-100 px-2 py-0.5 rounded">Grosir</span>
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <button
@@ -295,7 +316,7 @@ export default function Home() {
                     )}
                     <div>
                       <h4 className="font-semibold text-slate-900 text-sm">{item.name}</h4>
-                      <p className="text-xs text-slate-500">Rp {Number(item.price).toLocaleString("id-ID")} / pcs</p>
+                      <p className="text-xs text-slate-500">Rp {parsePrice(item.price_retail).toLocaleString("id-ID")} / pcs</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
