@@ -8,7 +8,8 @@ interface Product {
   id: number;
   name: string;
   category: string;
-  price: number;
+  price_retail: number | string;
+  price_wholesale?: number | string;
   image_url?: string;
   created_at?: string;
 }
@@ -39,7 +40,8 @@ export default function AdminDashboard() {
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("Thinwall");
   const [customCategory, setCustomCategory] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
+  const [priceRetail, setPriceRetail] = useState<string>("");
+  const [priceWholesale, setPriceWholesale] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -52,7 +54,8 @@ export default function AdminDashboard() {
 
   // Edit Price Modal State
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [newPrice, setNewPrice] = useState<string>("");
+  const [newPriceRetail, setNewPriceRetail] = useState<string>("");
+  const [newPriceWholesale, setNewPriceWholesale] = useState<string>("");
   const [isUpdatingPrice, setIsUpdatingPrice] = useState<boolean>(false);
 
   // Delete Confirmation Modal State
@@ -181,11 +184,12 @@ export default function AdminDashboard() {
       showNotification("error", "Nama produk wajib diisi!");
       return;
     }
-    const finalPrice = parseFloat(price);
-    if (isNaN(finalPrice) || finalPrice <= 0) {
-      showNotification("error", "Harga produk harus angka positif!");
+    const finalPriceRetail = parseFloat(priceRetail);
+    if (isNaN(finalPriceRetail) || finalPriceRetail <= 0) {
+      showNotification("error", "Harga eceran produk harus angka positif!");
       return;
     }
+    const finalPriceWholesale = priceWholesale ? parseFloat(priceWholesale) : null;
 
     const finalCategory = category === "Lainnya" && customCategory ? customCategory : category;
 
@@ -208,7 +212,8 @@ export default function AdminDashboard() {
       {
         name: name.trim(),
         category: finalCategory,
-        price: finalPrice,
+        price_retail: finalPriceRetail,
+        price_wholesale: finalPriceWholesale,
         image_url: uploadedImageUrl || null,
       },
     ]);
@@ -222,7 +227,8 @@ export default function AdminDashboard() {
       showNotification("success", `Produk "${name}" berhasil ditambahkan! 🎉`);
       // Reset Form
       setName("");
-      setPrice("");
+      setPriceRetail("");
+      setPriceWholesale("");
       setCategory("Thinwall");
       setCustomCategory("");
       setImageFile(null);
@@ -231,19 +237,19 @@ export default function AdminDashboard() {
     }
   };
 
-  // Handler Update Harga
   const handleSavePrice = async () => {
     if (!editingProduct) return;
-    const parsedPrice = parseFloat(newPrice);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      showNotification("error", "Harga baru harus angka positif!");
+    const parsedPriceRetail = parseFloat(newPriceRetail);
+    if (isNaN(parsedPriceRetail) || parsedPriceRetail <= 0) {
+      showNotification("error", "Harga eceran baru harus angka positif!");
       return;
     }
+    const parsedPriceWholesale = newPriceWholesale ? parseFloat(newPriceWholesale) : null;
 
     setIsUpdatingPrice(true);
     const { error } = await supabase
       .from("products")
-      .update({ price: parsedPrice })
+      .update({ price_retail: parsedPriceRetail, price_wholesale: parsedPriceWholesale })
       .eq("id", editingProduct.id);
 
     setIsUpdatingPrice(false);
@@ -253,7 +259,8 @@ export default function AdminDashboard() {
     } else {
       showNotification("success", `Harga ${editingProduct.name} berhasil diperbarui!`);
       setEditingProduct(null);
-      setNewPrice("");
+      setNewPriceRetail("");
+      setNewPriceWholesale("");
       fetchProducts();
     }
   };
@@ -488,23 +495,39 @@ export default function AdminDashboard() {
               </div>
 
               {/* Harga */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  Harga Satuan (Rp) <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm font-bold">
-                    Rp
-                  </span>
-                  <input
-                    type="number"
-                    placeholder="1500"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    disabled={isSubmitting}
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
-                    required
-                  />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Eceran (Rp) <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm font-bold">Rp</span>
+                    <input
+                      type="number"
+                      placeholder="1500"
+                      value={priceRetail}
+                      onChange={(e) => setPriceRetail(e.target.value)}
+                      disabled={isSubmitting}
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Grosir (Rp) <span className="text-slate-400 font-normal">(Opsional)</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-2.5 text-slate-400 text-sm font-bold">Rp</span>
+                    <input
+                      type="number"
+                      placeholder="1400"
+                      value={priceWholesale}
+                      onChange={(e) => setPriceWholesale(e.target.value)}
+                      disabled={isSubmitting}
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -641,7 +664,7 @@ export default function AdminDashboard() {
                       <th className="py-3 px-4 rounded-l-xl">Gambar</th>
                       <th className="py-3 px-4">Nama Produk</th>
                       <th className="py-3 px-4">Kategori</th>
-                      <th className="py-3 px-4">Harga (Rp)</th>
+                      <th className="py-3 px-4">Harga (Ecer/Grosir)</th>
                       <th className="py-3 px-4 text-right rounded-r-xl">Aksi</th>
                     </tr>
                   </thead>
@@ -673,14 +696,18 @@ export default function AdminDashboard() {
                             {p.category}
                           </span>
                         </td>
-                        <td className="py-3 px-4 font-extrabold text-emerald-700">
-                          Rp {Number(p.price).toLocaleString("id-ID")}
+                        <td className="py-3 px-4">
+                          <p className="font-extrabold text-emerald-700">Rp {Number(p.price_retail || 0).toLocaleString("id-ID")}</p>
+                          {p.price_wholesale && (
+                            <p className="text-xs font-bold text-yellow-600 mt-0.5">Rp {Number(p.price_wholesale).toLocaleString("id-ID")}</p>
+                          )}
                         </td>
                         <td className="py-3 px-4 text-right space-x-2">
                           <button
                             onClick={() => {
                               setEditingProduct(p);
-                              setNewPrice(p.price.toString());
+                              setNewPriceRetail(p.price_retail?.toString() || "");
+                              setNewPriceWholesale(p.price_wholesale?.toString() || "");
                             }}
                             className="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 font-semibold px-3 py-1.5 rounded-lg text-xs transition cursor-pointer"
                           >
@@ -724,17 +751,30 @@ export default function AdminDashboard() {
               <p className="font-bold text-slate-900 text-base">{editingProduct.name}</p>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Harga Baru (Rp)
-              </label>
-              <input
-                type="number"
-                value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                autoFocus
-              />
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Eceran Baru (Rp)
+                </label>
+                <input
+                  type="number"
+                  value={newPriceRetail}
+                  onChange={(e) => setNewPriceRetail(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Grosir Baru (Rp) <span className="text-slate-400 font-normal">(Opsional)</span>
+                </label>
+                <input
+                  type="number"
+                  value={newPriceWholesale}
+                  onChange={(e) => setNewPriceWholesale(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
             </div>
 
             <div className="flex gap-3 pt-2">
