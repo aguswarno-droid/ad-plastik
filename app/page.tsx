@@ -122,7 +122,10 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white/85 backdrop-blur-md border-b border-rose-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-emerald-600">AD Plastik</h1>
+          <div className="flex items-center gap-3">
+            <img src="/logo.svg" alt="AD Plastik Logo" className="w-9 h-9" />
+            <h1 className="text-2xl font-bold text-emerald-600">AD Plastik</h1>
+          </div>
           <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
             <span>📍 Cabang:</span>
             <select
