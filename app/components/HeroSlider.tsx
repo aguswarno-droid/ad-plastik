@@ -65,8 +65,8 @@ export default function HeroSlider({ onCatalogClick, onWAClick }: HeroSliderProp
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 mt-6">
-      <div className="relative rounded-2xl overflow-hidden shadow-xl border border-white/20">
+    <div className="w-full max-w-6xl mx-auto px-4 mt-6 overflow-hidden">
+      <div className="relative rounded-2xl overflow-hidden shadow-xl border border-white/20 w-full group">
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
           autoplay={{
@@ -74,12 +74,16 @@ export default function HeroSlider({ onCatalogClick, onWAClick }: HeroSliderProp
             disableOnInteraction: false,
           }}
           loop={true}
-          navigation={true}
+          speed={500}
+          navigation={{
+            nextEl: ".swiper-button-next-custom",
+            prevEl: ".swiper-button-prev-custom",
+          }}
           pagination={{ clickable: true }}
-          className="hero-swiper min-h-[280px] sm:min-h-[340px] md:min-h-[380px]"
+          className="hero-swiper min-h-[280px] sm:min-h-[340px] md:min-h-[380px] w-full"
         >
           {slides.map((slide) => (
-            <SwiperSlide key={slide.id}>
+            <SwiperSlide key={slide.id} className="w-full flex-shrink-0">
               <div
                 className={`w-full h-full min-h-[280px] sm:min-h-[340px] md:min-h-[380px] ${slide.bg} p-6 sm:p-12 flex flex-col justify-center items-center text-center text-white relative overflow-hidden`}
               >
@@ -112,6 +116,14 @@ export default function HeroSlider({ onCatalogClick, onWAClick }: HeroSliderProp
               </div>
             </SwiperSlide>
           ))}
+          
+          {/* Custom Navigation */}
+          <div className="swiper-button-prev-custom absolute top-1/2 left-4 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 text-slate-800 shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+          </div>
+          <div className="swiper-button-next-custom absolute top-1/2 right-4 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 text-slate-800 shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+          </div>
         </Swiper>
       </div>
     </div>
