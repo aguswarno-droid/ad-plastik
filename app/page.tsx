@@ -123,8 +123,13 @@ export default function Home() {
       <header className="bg-white/85 backdrop-blur-md border-b border-rose-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="AD Plastik Logo" className="w-9 h-9" />
-            <h1 className="text-2xl font-bold text-emerald-600">AD Plastik</h1>
+            <img src="/logo.svg" alt="AD Plastik Logo" className="w-11 h-11" />
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-extrabold tracking-tight text-emerald-600">AD Plastik</h1>
+              <span className="text-[10px] font-bold text-yellow-600 tracking-wider uppercase -mt-0.5 block">
+                Pusat Grosir & Eceran
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
             <span>📍 Cabang:</span>
