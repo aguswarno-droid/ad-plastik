@@ -66,7 +66,7 @@ export default function HeroSlider({ onCatalogClick, onWAClick }: HeroSliderProp
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 mt-6 overflow-hidden">
-      <div className="relative rounded-2xl overflow-hidden shadow-xl border border-white/20 w-full group">
+      <div className="relative rounded-2xl overflow-hidden shadow-xl border border-white/20 w-full h-[300px] md:h-[400px] lg:h-[450px] group">
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
           autoplay={{
@@ -80,12 +80,12 @@ export default function HeroSlider({ onCatalogClick, onWAClick }: HeroSliderProp
             prevEl: ".swiper-button-prev-custom",
           }}
           pagination={{ clickable: true }}
-          className="hero-swiper min-h-[280px] sm:min-h-[340px] md:min-h-[380px] w-full"
+          className="hero-swiper w-full h-full"
         >
           {slides.map((slide) => (
-            <SwiperSlide key={slide.id} className="w-full flex-shrink-0">
+            <SwiperSlide key={slide.id} className="w-full h-full flex-shrink-0">
               <div
-                className={`w-full h-full min-h-[280px] sm:min-h-[340px] md:min-h-[380px] ${slide.bg} p-6 sm:p-12 flex flex-col justify-center items-center text-center text-white relative overflow-hidden`}
+                className={`w-full h-full ${slide.bg} p-6 sm:p-12 flex flex-col justify-center items-center text-center text-white relative overflow-hidden`}
               >
                 {/* Decorative background glow */}
                 <div className="absolute -top-12 -left-12 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
