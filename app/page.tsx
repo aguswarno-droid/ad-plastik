@@ -49,6 +49,9 @@ export default function Home() {
       if (error) {
         console.error("Gagal mengambil data dari Supabase:", error.message);
       } else if (data) {
+        if (data.length === 0) {
+          console.error("Data produk dari Supabase kosong.");
+        }
         setProducts(data);
       }
       setLoading(false);

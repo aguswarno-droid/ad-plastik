@@ -1,11 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    "https://euvuegovsakdeeaibkne.supabase.co";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-const supabaseAnonKey =
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    "sb_publishable_mP64vQohAsEKxZH01grh0g_oMb6Vfkb"; // masukkan Publishable Key Supabase kamu di sini
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Missing env vars: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
