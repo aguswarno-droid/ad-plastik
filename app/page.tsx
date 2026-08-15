@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/supabaseClient";
-import HeroSlider from "./components/HeroSlider";
 import HeroSplitBanner from "./components/HeroSplitBanner";
 
 interface Product {
@@ -174,22 +173,9 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Slider */}
-      <HeroSlider
-        onCatalogClick={() => {
-          const el = document.getElementById("katalog");
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }}
-        onWAClick={() => {
-          const phone = BRANCHES[selectedBranch] || "6281234567890";
-          const message = encodeURIComponent(
-            `Halo Admin *${selectedBranch}*,\nSaya ingin bertanya mengenai produk kemasan & grosir plastik.`
-          );
-          window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-        }}
-      />
-
+      {/* Hero Split Banner */}
       <HeroSplitBanner
+        products={products}
         onCatalogClick={() => {
           const el = document.getElementById("katalog");
           if (el) el.scrollIntoView({ behavior: "smooth" });
