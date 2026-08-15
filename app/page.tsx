@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/supabaseClient";
 import HeroSlider from "./components/HeroSlider";
+import HeroSplitBanner from "./components/HeroSplitBanner";
 
 interface Product {
   id: number;
@@ -185,6 +186,13 @@ export default function Home() {
             `Halo Admin *${selectedBranch}*,\nSaya ingin bertanya mengenai produk kemasan & grosir plastik.`
           );
           window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+        }}
+      />
+
+      <HeroSplitBanner
+        onCatalogClick={() => {
+          const el = document.getElementById("katalog");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
         }}
       />
 
