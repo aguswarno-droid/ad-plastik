@@ -35,6 +35,9 @@ export default function Home() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>("Pusat SSA Bantul (Depan Stadion Sultan Agung)");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
+  const [categories, setCategories] = useState<string[]>(["Semua"]);
 
   // State Modal Login Admin
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
@@ -53,12 +56,24 @@ export default function Home() {
           console.error("Data produk dari Supabase kosong.");
         }
         setProducts(data);
+        
+        // Ekstrak kategori unik
+        const uniqueCategories = Array.from(new Set(data.map((p: Product) => p.category))).filter(Boolean);
+        setCategories(["Semua", ...uniqueCategories]);
       }
       setLoading(false);
     };
 
     fetchProducts();
   }, []);
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory === "Semua" || product.category === selectedCategory;
+    const matchesSearch = 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -175,15 +190,52 @@ export default function Home() {
 
       {/* Product Catalog Grid */}
       <section id="katalog" className="max-w-6xl mx-auto mt-10 px-4">
-        <h3 className="text-xl font-bold text-slate-900 mb-6 bg-white/60 inline-block px-3 py-1 rounded-lg border border-rose-100/60">
-          Katalog Produk Ready Stock
-        </h3>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <h3 className="text-xl font-bold text-slate-900 bg-white/60 inline-block px-3 py-1 rounded-lg border border-rose-100/60">
+            Katalog Produk Ready Stock
+          </h3>
+          
+          {/* Search Bar */}
+          <div className="relative w-full md:w-72">
+            <input
+              type="text"
+              placeholder="Cari produk (misal: thinwall)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium bg-white/80 backdrop-blur-sm"
+            />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              🔍
+            </span>
+          </div>
+        </div>
+
+        {/* Category Pills */}
+        {!loading && categories.length > 1 && (
+          <div className="flex overflow-x-auto gap-2 pb-4 mb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-semibold transition-all border ${
+                  selectedCategory === cat
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-md"
+                    : "bg-white/80 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-800"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <p className="text-center py-10 text-slate-500 font-medium">Memuat katalog dari database Supabase...</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center py-10 text-slate-500 font-medium">Produk tidak ditemukan.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-rose-100 p-5 flex flex-col justify-between hover:shadow-md transition">
                 <div>
                   {product.image_url ? (
