@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/supabaseClient";
+import { revalidateCatalog } from "@/app/actions";
 
 interface Product {
   id: number;
@@ -25,6 +27,7 @@ const CATEGORY_OPTIONS = [
 ];
 
 export default function AdminDashboard() {
+  const router = useRouter();
   // Auth Verification State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
@@ -234,6 +237,8 @@ export default function AdminDashboard() {
       setImageFile(null);
       setImagePreview(null);
       fetchProducts();
+      await revalidateCatalog();
+      router.refresh();
     }
   };
 
@@ -262,6 +267,8 @@ export default function AdminDashboard() {
       setNewPriceRetail("");
       setNewPriceWholesale("");
       fetchProducts();
+      await revalidateCatalog();
+      router.refresh();
     }
   };
 
@@ -283,6 +290,8 @@ export default function AdminDashboard() {
       showNotification("success", `Produk "${deletingProduct.name}" berhasil dihapus.`);
       setDeletingProduct(null);
       fetchProducts();
+      await revalidateCatalog();
+      router.refresh();
     }
   };
 
