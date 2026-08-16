@@ -147,16 +147,16 @@ export default function AdminDashboard() {
     }
   };
 
-  // Upload Gambar ke Supabase Storage (bucket: product-images)
+  // Upload Gambar ke Supabase Storage (bucket: PRODUCTS)
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     try {
       // Sanitasi nama file: hilangkan spasi & karakter khusus
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${Date.now()}-${sanitizedName}`;
-      const filePath = `products/${fileName}`;
+      const filePath = `images/${fileName}`;
 
       const { data, error: uploadError } = await supabase.storage
-        .from("product-images")
+        .from("PRODUCTS")
         .upload(filePath, file, {
           cacheControl: "3600",
           upsert: false,
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
       }
 
       const { data: publicUrlData } = supabase.storage
-        .from("product-images")
+        .from("PRODUCTS")
         .getPublicUrl(filePath);
 
       return publicUrlData.publicUrl;
@@ -451,7 +451,7 @@ export default function AdminDashboard() {
                 <span>➕</span> Tambah Produk Baru
               </h2>
               <p className="text-xs text-slate-500">
-                Gambar akan otomatis ter-upload ke Supabase Storage (bucket: product-images).
+                Gambar akan otomatis ter-upload ke Supabase Storage (bucket: PRODUCTS).
               </p>
             </div>
 
