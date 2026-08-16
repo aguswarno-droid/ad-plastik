@@ -148,26 +148,26 @@ export default function Home() {
   return (
     <div className="min-h-screen text-slate-800 pb-24">
       {/* Header */}
-      <header className="bg-white/85 backdrop-blur-md border-b border-rose-100 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="bg-white/85 backdrop-blur-md border-b border-rose-100 sticky top-0 z-10 shadow-sm max-w-full overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
           <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="AD Plastik Logo" className="w-11 h-11" />
+            <img src="/logo.svg" alt="AD Plastik Logo" className="w-10 h-10 sm:w-11 sm:h-11" />
             <div className="flex flex-col">
-              <h1 className="text-2xl font-extrabold tracking-tight text-emerald-600">AD Plastik</h1>
-              <span className="text-[10px] font-bold text-yellow-600 tracking-wider uppercase -mt-0.5 block">
+              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-emerald-600">AD Plastik</h1>
+              <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 tracking-wider uppercase -mt-0.5 block">
                 Pusat Grosir & Eceran
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200 text-sm">
-            <span>📍 Cabang:</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/80 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-slate-200 text-xs sm:text-sm w-full sm:w-auto">
+            <span className="whitespace-nowrap">📍 Cabang:</span>
             <select
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
-              className="bg-transparent font-semibold text-slate-900 focus:outline-none cursor-pointer"
+              className="bg-transparent font-semibold text-slate-900 focus:outline-none cursor-pointer w-full text-ellipsis overflow-hidden"
             >
-              <option value="Pusat SSA Bantul (Depan Stadion Sultan Agung)">Pusat SSA Bantul (Depan Stadion Sultan Agung)</option>
-              <option value="Cabang Potorono">Cabang Potorono</option>
+              <option value="Pusat SSA Bantul (Depan Stadion Sultan Agung)">SSA Bantul</option>
+              <option value="Cabang Potorono">Potorono</option>
             </select>
           </div>
         </div>

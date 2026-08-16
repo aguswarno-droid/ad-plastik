@@ -18,27 +18,27 @@ export default function HeroSplitBanner({ onCatalogClick, products = [] }: HeroS
   const rightImage = paperboxProduct?.image_url || "https://images.unsplash.com/photo-1589139366579-0520261cb465?auto=format&fit=crop&q=80";
   return (
     <div className="w-full max-w-6xl mx-auto px-4 mt-8">
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl w-full h-[500px] flex flex-col md:flex-row group bg-slate-900">
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl w-full min-h-[520px] md:h-[500px] flex flex-col md:flex-row group bg-slate-900">
         
         {/* Left Side (Emerald / Eceran) */}
-        <div className="flex-1 bg-emerald-700 relative overflow-hidden flex flex-col items-center justify-center p-8 transition-transform duration-700 hover:flex-[1.2]">
+        <div className="flex-1 bg-emerald-700 relative overflow-hidden flex flex-col items-center justify-center p-6 md:p-8 pt-8 pb-4 md:pb-8 transition-transform duration-700 hover:flex-[1.2]">
           <div className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" style={{ backgroundImage: `url('${leftImage}')` }}></div>
           <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent"></div>
           <div className="relative z-10 text-center transform transition-transform duration-500 group-hover:-translate-y-2">
-            <span className="inline-block bg-white/20 backdrop-blur-md text-white font-bold px-5 py-1.5 rounded-full text-xs tracking-[0.25em] mb-4 border border-emerald-400/40 shadow-lg">ECERAN</span>
-            <h2 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase mb-2 drop-shadow-xl">Thinwall</h2>
-            <p className="text-emerald-100 font-semibold tracking-wide">Tebal & Anti Bocor</p>
+            <span className="inline-block bg-white/20 backdrop-blur-md text-white font-bold px-4 py-1 md:px-5 md:py-1.5 rounded-full text-[10px] md:text-xs tracking-[0.25em] mb-2 md:mb-4 border border-emerald-400/40 shadow-lg">ECERAN</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white italic tracking-tighter uppercase mb-1 md:mb-2 drop-shadow-xl">Thinwall</h2>
+            <p className="text-sm md:text-base text-emerald-100 font-semibold tracking-wide">Tebal & Anti Bocor</p>
           </div>
         </div>
 
         {/* Right Side (Amber / Grosir) */}
-        <div className="flex-1 bg-amber-800 relative overflow-hidden flex flex-col items-center justify-center p-8 transition-transform duration-700 hover:flex-[1.2]">
+        <div className="flex-1 bg-amber-800 relative overflow-hidden flex flex-col items-center justify-start md:justify-center p-6 md:p-8 pt-6 md:pt-8 pb-44 md:pb-8 transition-transform duration-700 hover:flex-[1.2]">
           <div className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" style={{ backgroundImage: `url('${rightImage}')` }}></div>
           <div className="absolute inset-0 bg-gradient-to-t from-amber-950/80 to-transparent"></div>
           <div className="relative z-10 text-center transform transition-transform duration-500 group-hover:-translate-y-2">
-            <span className="inline-block bg-black/30 backdrop-blur-md text-amber-50 font-bold px-5 py-1.5 rounded-full text-xs tracking-[0.25em] mb-4 border border-amber-500/40 shadow-lg">GROSIR</span>
-            <h2 className="text-5xl md:text-6xl font-black text-white italic tracking-tighter uppercase mb-2 drop-shadow-xl">Paper Box</h2>
-            <p className="text-amber-200 font-semibold tracking-wide">Eco-Friendly & Premium</p>
+            <span className="inline-block bg-black/30 backdrop-blur-md text-amber-50 font-bold px-4 py-1 md:px-5 md:py-1.5 rounded-full text-[10px] md:text-xs tracking-[0.25em] mb-2 md:mb-4 border border-amber-500/40 shadow-lg">GROSIR</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white italic tracking-tighter uppercase mb-1 md:mb-2 drop-shadow-xl">Paper Box</h2>
+            <p className="text-sm md:text-base text-amber-200 font-semibold tracking-wide">Eco-Friendly & Premium</p>
           </div>
         </div>
 
@@ -48,21 +48,21 @@ export default function HeroSplitBanner({ onCatalogClick, products = [] }: HeroS
         {/* Center Overlay Elements (Neo-Kick Style) */}
         <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center overflow-visible z-30">
           {/* Large Transparent Text */}
-          <h1 className="text-[5rem] md:text-[9rem] font-black italic text-white opacity-40 tracking-tighter uppercase select-none drop-shadow-2xl whitespace-nowrap z-30">
+          <h1 className="hidden md:block text-[5rem] md:text-[9rem] font-black italic text-white opacity-40 tracking-tighter uppercase select-none drop-shadow-2xl whitespace-nowrap z-30">
             FRESH & ECO
           </h1>
           
           {/* Center CTA and Prices */}
-          <div className="absolute flex flex-col items-center gap-6 z-40 pointer-events-auto translate-y-8 md:translate-y-12">
-            <div className="flex items-center gap-6 bg-slate-900/85 backdrop-blur-xl px-8 py-4 rounded-3xl border border-white/10 shadow-2xl ring-1 ring-white/5">
+          <div className="absolute bottom-6 md:bottom-auto md:top-1/2 md:-translate-y-1/2 flex flex-col items-center gap-4 md:gap-6 z-40 pointer-events-auto md:translate-y-12 w-[90%] md:w-auto">
+            <div className="flex items-center gap-4 md:gap-6 bg-slate-900/85 backdrop-blur-xl px-6 md:px-8 py-3 md:py-4 rounded-3xl border border-white/10 shadow-2xl ring-1 ring-white/5 w-full md:w-auto justify-center">
               <div className="text-center">
-                <p className="text-[10px] text-emerald-400 font-black uppercase tracking-widest mb-1">Mulai Dari</p>
-                <p className="text-2xl font-black text-white tracking-tight">Rp 500</p>
+                <p className="text-[10px] text-emerald-400 font-black uppercase tracking-widest mb-0.5 md:mb-1">Mulai Dari</p>
+                <p className="text-xl md:text-2xl font-black text-white tracking-tight">Rp 500</p>
               </div>
               <div className="w-px h-10 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-[10px] text-amber-400 font-black uppercase tracking-widest mb-1">Grosir</p>
-                <p className="text-2xl font-black text-white tracking-tight">Diskon ++</p>
+                <p className="text-[10px] text-amber-400 font-black uppercase tracking-widest mb-0.5 md:mb-1">Grosir</p>
+                <p className="text-xl md:text-2xl font-black text-white tracking-tight">Diskon ++</p>
               </div>
             </div>
             
