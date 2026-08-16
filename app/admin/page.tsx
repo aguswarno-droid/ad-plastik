@@ -150,11 +150,12 @@ export default function AdminDashboard() {
   // Upload Gambar ke Supabase Storage (bucket: product-images)
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+      // Sanitasi nama file: hilangkan spasi & karakter khusus
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const fileName = `${Date.now()}-${sanitizedName}`;
       const filePath = `products/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { data, error: uploadError } = await supabase.storage
         .from("product-images")
         .upload(filePath, file, {
           cacheControl: "3600",
@@ -162,10 +163,8 @@ export default function AdminDashboard() {
         });
 
       if (uploadError) {
-        console.error("Storage Upload Error:", uploadError.message);
-        throw new Error(
-          `Gagal upload gambar ke Supabase Storage: ${uploadError.message}. Pastikan bucket 'product-images' publik.`
-        );
+        console.error("Storage Upload Error Details:", uploadError);
+        throw new Error(`Gagal upload gambar: ${uploadError.message} (Cek RLS/Storage Policy)`);
       }
 
       const { data: publicUrlData } = supabase.storage
@@ -174,7 +173,8 @@ export default function AdminDashboard() {
 
       return publicUrlData.publicUrl;
     } catch (err: any) {
-      showNotification("error", err.message || "Gagal mengunggah gambar.");
+      console.error("Catch Error Upload:", err);
+      showNotification("error", err.message || "Terjadi kesalahan saat mengunggah gambar.");
       return null;
     }
   };
