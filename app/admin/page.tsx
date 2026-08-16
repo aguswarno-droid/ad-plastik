@@ -163,8 +163,8 @@ export default function AdminDashboard() {
         });
 
       if (uploadError) {
-        console.error("Storage Upload Error Details:", uploadError);
-        throw new Error(`Gagal upload gambar: ${uploadError.message} (Cek RLS/Storage Policy)`);
+        console.error("Full upload error:", uploadError);
+        throw uploadError;
       }
 
       const { data: publicUrlData } = supabase.storage
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
 
       return publicUrlData.publicUrl;
     } catch (err: any) {
-      console.error("Catch Error Upload:", err);
+      console.error("Full upload error:", err);
       showNotification("error", err.message || "Terjadi kesalahan saat mengunggah gambar.");
       return null;
     }
